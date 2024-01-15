@@ -17,6 +17,8 @@ function setup() {
   background(255);
   pg = createGraphics(width/4, height);  
   
+}
+function mouseReleased(){
   userStartAudio;
   // 设置音频输入
   // Create an Audio input
@@ -35,8 +37,8 @@ function setup() {
   fft.setInput(mic);
 
   barWidth = 400 * division / bands;
-}
 
+}
 function draw() {
   let volume1 = mic.getLevel();
   let thresh = 0.01;
@@ -54,7 +56,7 @@ function draw() {
     sum[i] += (spectrum[i] - sum[i]) * smoothingFactor;
     if (i <= bands / division) {
       pg.vertex(
-        map(i, 0, bands / division, 0, pg.width),
+        map(i, 0, bands, 0, pg.width),
         constrain(map(sum[i], 0, 255, 100, pg.height / 2 - 100), 100, pg.height / 2 - 100)
       );
     }
