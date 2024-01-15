@@ -17,11 +17,11 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   background(255);
   pg = createGraphics(width/4, height);  
-  
+  userStartAudio;
 }
 function mouseReleased(){
     if(!click){
-      //userStartAudio;
+      userStartAudio;
       // 设置音频输入
       // Create an Audio input
       mic = new p5.AudioIn();
