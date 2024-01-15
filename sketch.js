@@ -18,27 +18,27 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   background(255);
   pg = createGraphics(width/4, height);  
+  // 设置音频输入
+  // Create an Audio input
+  mic = new p5.AudioIn();
+
+  mic.start();
+
+//   // 设置音量分析
+//   loudness = new p5.Amplitude();
+//   loudness.setInput(mic);
+
+  //bands = 16;
+  fft = new p5.FFT(0.8, bands);
+
+  // set the input source to the mic
+  fft.setInput(mic);
+
+  barWidth = pg.width * division / bands;
 }
 function mouseReleased(){
     if(!click){
       userStartAudio();
-      // 设置音频输入
-      // Create an Audio input
-      mic = new p5.AudioIn();
-    
-      mic.start();
-    
-    //   // 设置音量分析
-    //   loudness = new p5.Amplitude();
-    //   loudness.setInput(mic);
-    
-      //bands = 16;
-      fft = new p5.FFT(0.8, bands);
-    
-      // set the input source to the mic
-      fft.setInput(mic);
-    
-      barWidth = pg.width * division / bands;
     
       click=true;
     }
