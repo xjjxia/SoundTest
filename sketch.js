@@ -37,7 +37,7 @@ function mouseReleased(){
   // set the input source to the mic
   fft.setInput(mic);
 
-  barWidth = 400 * division / bands;
+  barWidth = pg.width * division / bands;
 
   click=true;
 }
