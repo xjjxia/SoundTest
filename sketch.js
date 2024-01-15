@@ -12,6 +12,7 @@ let stepp = 0;
 let resol = 2160;
 let smoothingFactor = 0.2;
 let pg;
+let click=false;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(255);
@@ -38,52 +39,55 @@ function mouseReleased(){
 
   barWidth = 400 * division / bands;
 
+  click=true;
 }
 function draw() {
-  let volume1 = mic.getLevel();
-  let thresh = 0.01;
-  spectrum = fft.analyze(bands);
-  console.log(volume1);
-  noStroke();
-  
-  pg.background(255);
-  pg.beginShape();
-  pg.stroke(0);
-  pg.strokeWeight(2);
-  pg.noFill();
-  
-  for (let i = 0; i < bands; i++) {
-    sum[i] += (spectrum[i] - sum[i]) * smoothingFactor;
-    if (i <= bands / division) {
-      pg.vertex(
-        map(i, 0, bands, 0, pg.width),
-        constrain(map(sum[i], 0, 255, 100, pg.height / 2 - 100), 100, pg.height / 2 - 100)
-      );
+    if(click){
+    let volume1 = mic.getLevel();
+    let thresh = 0.01;
+    spectrum = fft.analyze(bands);
+    console.log(volume1);
+    noStroke();
+    
+    pg.background(255);
+    pg.beginShape();
+    pg.stroke(0);
+    pg.strokeWeight(2);
+    pg.noFill();
+    
+    for (let i = 0; i < bands; i++) {
+      sum[i] += (spectrum[i] - sum[i]) * smoothingFactor;
+      if (i <= bands / division) {
+        pg.vertex(
+          map(i, 0, bands, 0, pg.width),
+          constrain(map(sum[i], 0, 255, 100, pg.height / 2 - 100), 100, pg.height / 2 - 100)
+        );
+      }
     }
-  }
-  pg.endShape();
-
-  pg.fill(0);
-  for (let i = 0; i < bands / division; i++) {
-    pg.rect(50 + i * barWidth, pg.height - 100, barWidth, -sum[i]/255 * (pg.height / 2 - 200) * scale * rectH);
-  }
-  image(pg, 0, 0);
+    pg.endShape();
   
-  sensity=255;
-  if (volume1 > thresh) {
+    pg.fill(0);
     for (let i = 0; i < bands / division; i++) {
-      //sum[i] += (spectrum[i] - sum[i]) * smoothingFactor;
-      let alpha = map(sum[i], 0, sensity, 255, 0);
-      //console.log(spectrum[i],alpha);
-      fill(alpha);
-      arc(width / 2, height / 2, bands * 2 - i * 2 * division, bands * 2 - i * 2 * division, (stepp / resol) * TWO_PI, ((stepp + 1) / resol) * TWO_PI);
+      pg.rect(50 + i * barWidth, pg.height - 100, barWidth, -sum[i]/255 * (pg.height / 2 - 200) * scale * rectH);
     }
-    stepp++;
-    if (stepp + 1 == resol) {
-      stepp = 0;
-      resetSketch();
+    image(pg, 0, 0);
+    
+    sensity=255;
+    if (volume1 > thresh) {
+      for (let i = 0; i < bands / division; i++) {
+        //sum[i] += (spectrum[i] - sum[i]) * smoothingFactor;
+        let alpha = map(sum[i], 0, sensity, 255, 0);
+        //console.log(spectrum[i],alpha);
+        fill(alpha);
+        arc(width / 2, height / 2, bands * 2 - i * 2 * division, bands * 2 - i * 2 * division, (stepp / resol) * TWO_PI, ((stepp + 1) / resol) * TWO_PI);
+      }
+      stepp++;
+      if (stepp + 1 == resol) {
+        stepp = 0;
+        resetSketch();
+      }
     }
-  }
+    }
 }
 
 function keyPressed() {
